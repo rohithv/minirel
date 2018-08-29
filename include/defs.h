@@ -18,6 +18,9 @@
 #define RELCAT		"relcat"   /* name of the relation catalog file */
 #define ATTRCAT		"attrcat"  /* name of the attribute catalog file */
 
+#define SLOTMAPSIZE 4
+#define RECORDSIZE 120
+
 /*************************************************************
 		TYPE DEFINITIONS 
 *************************************************************/
