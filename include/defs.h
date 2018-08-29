@@ -57,6 +57,7 @@ typedef struct RelCat{
 	Rid relcatRid;
 	FILE *relFile;
 	bool modified;
+	bool occupied;
 	Attrcat *attrList;
 } RelCat;
 
