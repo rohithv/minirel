@@ -39,5 +39,30 @@ typedef struct ps {
 	} Page;
 
 
+typedef struct AttrCat{
+	unsigned offset;
+	unsigned length;
+	char type[15];
+	char attrName[15];
+	char relName[15];
+} Attrcat;
 
+typedef struct RelCat{
+	char relName[15];
+	unsigned recLength;
+	unsigned recsPerPg;
+	unsigned numAttrs;
+	unsigned numRecs;
+	unsigned numPgs;
+	Rid relcatRid;
+	FILE *relFile;
+	bool modified;
+	Attrcat *attrList;
+} RelCat;
+
+typedef struct Buffer{
+	Page page;
+	short pid;
+	bool modified;
+}Buffer;
 /*****************************************************************/
