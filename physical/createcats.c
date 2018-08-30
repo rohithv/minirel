@@ -1,8 +1,12 @@
+#include<stdio.h>
+#include<unistd.h>
+#include<string.h>
+#include "../include/defs.h"
+#include "utils.c"
 
-
-CreateCats()
+int CreateCats()
 {
- printf("CreateCats \n ");
+ return ((CreateRelCats()==OK && CreateAttrCats()==OK) ? OK : NOTOK); //Return OK if both are OK.
 }
 
 
@@ -19,6 +23,47 @@ Initial values for Relation Catalog are as above.
 
 int CreateRelCats()
 {
+	//Check if catalog already exists.
+	if (access(RELCAT, F_OK) != -1)
+	{
+		//Error message to be printed here
+		return NOTOK;
+	}
+
+	FILE *relcat= fopen(RELCAT, wb);
+
+	char page[PAGESIZE]= { 0 }; //buffer initialized
+	int slotmap;
+	
+	/*
+	 * Slotmap is in binary.
+	 * First two slots are occupied -> 1100.. followed by 28 0s (since 32 bits is given)
+	 * Slotmap converted to hex is 0xC0000000
+	 */
+	slotmap = 0xC0000000;
+
+	//copy slotmap to buffer
+	CopyIntInBinary(slotmap, page);
+
+	//First entry = relcat
+	strncpy(page+SLOTMAPSIZE, "relcat", 6);
+	CopyIntInBinary(page+SLOTMAPSIZE+15, 90);
+	CopyIntInBinary(page+SLOTMAPSIZE+30, 4);
+	CopyIntInBinary(page+SLOTMAPSIZE+45, 6);
+	CopyIntInBinary(page+SLOTMAPSIZE+60, 2);
+	CopyIntInBinary(page+SLOTMAPSIZE+75, 1);
+
+	//Second Entry = Attrcat
+	strncpy(page+SLOTMAPSIZE+RECORDSIZE, "attrcat", 6);
+	CopyIntInBinary(page+SLOTMAPSIZE+RECORDSIZE+15, 75);
+	CopyIntInBinary(page+SLOTMAPSIZE+RECORDSIZE+30, 4);
+	CopyIntInBinary(page+SLOTMAPSIZE+RECORDSIZE+45, 5);
+	CopyIntInBinary(page+SLOTMAPSIZE+RECORDSIZE+60, 11);
+	CopyIntInBinary(page+SLOTMAPSIZE+RECORDSIZE+75, 3);
+
+	write(relcat, page, PAGESIZE);
+	fclose(relcat);
+	return OK;
 
 }
 
