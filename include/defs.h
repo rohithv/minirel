@@ -45,6 +45,7 @@ typedef struct AttrCat{
 	char type[15];
 	char attrName[15];
 	char relName[15];
+	struct Attrcat *next;
 } Attrcat;
 
 typedef struct RelCat{
