@@ -12,7 +12,10 @@ int OpenCats()
 {
 	int i;
 	//Check whether both files exist here. else return NOTOK
-
+	if( access(RELCAT, F_OK) == -1 || access(ATTRCAT, F_OK) == -1){
+		//Error message to be printed here
+		return NOTOK;
+	}
 
 	//initializing the control fields
 	for(i=0;i<MAXOPEN;i++){
@@ -29,7 +32,7 @@ int OpenCats()
 	//relcat entry relNum=0
 	// Use ReadIntFromBinary() for storing integer in catcache[0].numPgs etc. from buffer.
 
-	char page[PAGESIZE];
+	char page[PAGESIZE] = { 0 };
 	
 	FILE *relcat= fopen(RELCAT,wb);
 	read(relcat,page,PAGESIZE);
