@@ -1,6 +1,16 @@
+/*
+ * @author : bhavani
+ */
 
-
-FindRelNum()
+int FindRelNum(char * relName)
 {
- printf("FindRelNum \n ");
+	int i;
+	for(i=0;i<MAXOPEN;i++){
+		if( catcache[i].occupied ==  true){
+			if( strcmp(relName, catcache[i].relName) == 0){
+				return i;
+			}
+		}
+	}
+	return NOTOK;	
 }

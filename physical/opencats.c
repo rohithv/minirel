@@ -1,4 +1,6 @@
-
+/*
+ * @authors : bhavani,priyatam
+ */
 
 
 /*
@@ -34,7 +36,7 @@ int OpenCats()
 
 	char page[PAGESIZE] = { 0 };
 	
-	FILE *relcat= fopen(RELCAT,wb);
+	FILE *relcat= fopen(RELCAT,"rb+");
 	read(relcat,page,PAGESIZE);
 
 	catcache[0].relName= "relcat";
@@ -47,7 +49,7 @@ int OpenCats()
 	catcache[0].modified= false;
 	
 	catcache[0].relFile= relcat;
-	catcache[0].recsPerPg= ReadIntFromBinary(page+SLOTMAPSIZE+4*15);
+	catcache[0].numRecs= ReadIntFromBinary(page+SLOTMAPSIZE+4*15);
 	catcache[0].numPgs= ReadIntFromBinary(page+SLOTMPAPSIZE+5*15);
 	
 	catcache[0].attrList= CreateRelcatAttrCache();
@@ -61,8 +63,8 @@ int OpenCats()
 	catcache[1].occupied= true;
 	catcache[1].modified= false;
 	
-	catcache[1].relFile= relcat;
-	catcache[1].recsPerPg= ReadIntFromBinary(page+SLOTMAPSIZE+RECORDSIZE+4*15);
+	catcache[1].relFile= fopen(ATTRCAT,"rb+");
+	catcache[1].numRecs= ReadIntFromBinary(page+SLOTMAPSIZE+RECORDSIZE+4*15);
 	catcache[1].numPgs= ReadIntFromBinary(page+SLOTMAPSIZE+RECORDSIZE+5*15);
 	
 	catcache[1].attrList= CreateAttrcatAttrCache();
@@ -77,54 +79,18 @@ int OpenCats()
 
 AttrCat* CreateRelcatAttrCache(){
 	//Just initialize values as done in createcats()
-	// create linked list in reverse order
+	// create linked list of attributes in reverse order
 	
 	AttrCat *relcatAttrHead= NULL,*temp;
 	
-	//sixth attribute
+	//first attribute
 	temp= (Attrcat *)malloc(sizeof(Attrcat));
 	
 	strcpy(temp.relName, RELCAT);
-	strcpy(temp.attrName, "numPgs");
-	strcpy(temp.type, "i");
+	strcpy(temp.attrName, "relName");
+	strcpy(temp.type, "s");
 	temp.length= 15;
-	temp.offset= 75;
-	
-	temp->next= relcatAttrHead;
-	relcatAttrHead= temp;
-	
-	//fifth attribute
-	temp= (Attrcat *)malloc(sizeof(Attrcat));
-	
-	strcpy(temp.relName, RELCAT);
-	strcpy(temp.attrName, "numRecs");
-	strcpy(temp.type, "i");
-	temp.length= 15;
-	temp.offset= 60;
-	
-	temp->next= relcatAttrHead;
-	relcatAttrHead= temp;
-	
-	//fourth attribute
-	temp= (Attrcat *)malloc(sizeof(Attrcat));
-	
-	strcpy(temp.relName, RELCAT);
-	strcpy(temp.attrName, "numAttrs");
-	strcpy(temp.type, "i");
-	temp.length= 15;
-	temp.offset= 45;
-	
-	temp->next= relcatAttrHead;
-	relcatAttrHead= temp;
-	
-	//third attribute
-	temp= (Attrcat *)malloc(sizeof(Attrcat));
-	
-	strcpy(temp.relName, RELCAT);
-	strcpy(temp.attrName, "recsPerPg");
-	strcpy(temp.type, "i");
-	temp.length= 15;
-	temp.offset= 30;
+	temp.offset= 0;
 	
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;
@@ -141,14 +107,50 @@ AttrCat* CreateRelcatAttrCache(){
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;
 	
-	//first attribute
+	//third attribute
 	temp= (Attrcat *)malloc(sizeof(Attrcat));
 	
 	strcpy(temp.relName, RELCAT);
-	strcpy(temp.attrName, "relName");
-	strcpy(temp.type, "s");
+	strcpy(temp.attrName, "recsPerPg");
+	strcpy(temp.type, "i");
 	temp.length= 15;
-	temp.offset= 0;
+	temp.offset= 30;
+	
+	temp->next= relcatAttrHead;
+	relcatAttrHead= temp;
+	
+	//fourth attribute
+	temp= (Attrcat *)malloc(sizeof(Attrcat));
+	
+	strcpy(temp.relName, RELCAT);
+	strcpy(temp.attrName, "numAttrs");
+	strcpy(temp.type, "i");
+	temp.length= 15;
+	temp.offset= 45;
+	
+	temp->next= relcatAttrHead;
+	relcatAttrHead= temp;
+	
+	//fifth attribute
+	temp= (Attrcat *)malloc(sizeof(Attrcat));
+	
+	strcpy(temp.relName, RELCAT);
+	strcpy(temp.attrName, "numRecs");
+	strcpy(temp.type, "i");
+	temp.length= 15;
+	temp.offset= 60;
+	
+	temp->next= relcatAttrHead;
+	relcatAttrHead= temp;
+	
+	//sixth attribute
+	temp= (Attrcat *)malloc(sizeof(Attrcat));
+	
+	strcpy(temp.relName, RELCAT);
+	strcpy(temp.attrName, "numPgs");
+	strcpy(temp.type, "i");
+	temp.length= 15;
+	temp.offset= 75;
 	
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;
@@ -163,42 +165,18 @@ AttrCat* CreateRelcatAttrCache(){
 
 AttrCat* CreateAttrcatAttrCache(){
 	//Just initialize values as done in createcats()
-	// create linked list in reverse order
+	// create linked list of attributes in reverse order
 	
-	AttrCat *attrcatAtrrHead= NULL,*temp;
+	AttrCat *attrcatAttrHead= NULL,*temp;
 	
-	//fifth attribute
+	//first attribute
 	temp= (Attrcat *)malloc(sizeof(Attrcat));
 	
 	strcpy(temp.relName, ATTRCAT);
-	strcpy(temp.attrName, "offset");
-	strcpy(temp.type, "i");
-	temp.length= 15;
-	temp.offset= 60;
-	
-	temp->next= relcatAttrHead;
-	relcatAttrHead= temp;
-	
-	//fourth attribute
-	temp= (Attrcat *)malloc(sizeof(Attrcat));
-	
-	strcpy(temp.relName, ATTRCAT);
-	strcpy(temp.attrName, "length");
-	strcpy(temp.type, "i");
-	temp.length= 15;
-	temp.offset= 45;
-	
-	temp->next= relcatAttrHead;
-	relcatAttrHead= temp;
-	
-	//third attribute
-	temp= (Attrcat *)malloc(sizeof(Attrcat));
-	
-	strcpy(temp.relName, ATTRCAT);
-	strcpy(temp.attrName, "type");
+	strcpy(temp.attrName, "relName");
 	strcpy(temp.type, "s");
 	temp.length= 15;
-	temp.offset= 30;
+	temp.offset= 0;
 	
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;
@@ -215,14 +193,38 @@ AttrCat* CreateAttrcatAttrCache(){
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;
 	
-	//first attribute
+	//third attribute
 	temp= (Attrcat *)malloc(sizeof(Attrcat));
 	
 	strcpy(temp.relName, ATTRCAT);
-	strcpy(temp.attrName, "relName");
+	strcpy(temp.attrName, "type");
 	strcpy(temp.type, "s");
 	temp.length= 15;
-	temp.offset= 0;
+	temp.offset= 30;
+	
+	temp->next= relcatAttrHead;
+	relcatAttrHead= temp;
+	
+	//fourth attribute
+	temp= (Attrcat *)malloc(sizeof(Attrcat));
+	
+	strcpy(temp.relName, ATTRCAT);
+	strcpy(temp.attrName, "length");
+	strcpy(temp.type, "i");
+	temp.length= 15;
+	temp.offset= 45;
+	
+	temp->next= relcatAttrHead;
+	relcatAttrHead= temp;
+	
+	//fifth attribute
+	temp= (Attrcat *)malloc(sizeof(Attrcat));
+	
+	strcpy(temp.relName, ATTRCAT);
+	strcpy(temp.attrName, "offset");
+	strcpy(temp.type, "i");
+	temp.length= 15;
+	temp.offset= 60;
 	
 	temp->next= relcatAttrHead;
 	relcatAttrHead= temp;

@@ -1,4 +1,7 @@
-
+/*
+ * @author : bhavani
+ */
+ 
 int CloseCats()
 {
 	//Check whether both files exist here. else return NOTOK
@@ -37,15 +40,16 @@ int CloseCats()
 		CopyIntInBinary(smallbuffer+RECORDSIZE+30, 4);
 		CopyIntInBinary(smallbuffer+RECORDSIZE+45, 5);
 		CopyIntInBinary(smallbuffer+RECORDSIZE+60, catcache[1].recsPerPg);
-		CopyIntInBinary(smallbufferRECORDSIZE++75, catcache[1].numPgs);
+		CopyIntInBinary(smallbuffer+RECORDSIZE+75, catcache[1].numPgs);
 		
 		fseek(relcat,SEEK_SET,SLOTMAPSIZE);  //SEEK Positon to point first record in relcat relaton
-		write(relcat, smallbuffer, 240);
-		fclose(relcat); 
+		write(relcat, smallbuffer, 240); 
 	}
 	
 	catcache[0].occupied= false;
 	catcache[1].occupied= false;
 	
+	fclose(catcache[0].relFile);
+	fclose(catcache[1].relFile);
 	return OK;
 }

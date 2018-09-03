@@ -1,3 +1,7 @@
+/*
+ * @authors : rohith,priyatam,bhavani
+ */
+
 #include<stdio.h>
 #include<unistd.h>
 #include<string.h>
@@ -30,7 +34,7 @@ int CreateRelCats()
 		return NOTOK;
 	}
 
-	FILE *relcat= fopen(RELCAT, wb);
+	FILE *relcat= fopen(RELCAT, "wb");
 
 	char page[PAGESIZE]= { 0 }; //buffer initialized
 	int slotmap;
@@ -98,7 +102,7 @@ int CreateAttrCats()
 		return NOTOK;
 	}
 	
-	FILE *attrcat = fopen(ATTRCAT,wb);
+	FILE *attrcat = fopen(ATTRCAT,"wb");
 	
 	char page[PAGESIZE] = { 0 };	//buffer intialized
 	int slotmap;
@@ -144,7 +148,7 @@ int CreateAttrCats()
 	write(attrcat, page, PAGESIZE);  //first page in attribute catalog
 	
 	//page[PAGESIZE] = { 0 };
-	memset(page,0,sizeof(page));
+	memset(page,0,PAGESIZE);
 
 	slotmap = 0xf0000000;   //(11110...............)
 
@@ -182,7 +186,7 @@ int CreateAttrCats()
 	write(attrcat, page, PAGESIZE);  //second page in attribute catalog
 
 	
-	memset(page,0,sizeof(page));
+	memset(page,0,PAGESIZE);
 
 	slotmap = 0xe0000000;   //(1110.................)
 
