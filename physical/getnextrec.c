@@ -26,7 +26,7 @@ int GetNextRec(int relNum, Rid startRid, Rid *foundRid, char **recPtr)
 
 		slotmap = buffer[relNum].slotmap;
 		temp = 1;
-		temp = temp << (sizeof(int) - foundRid.slotnum - 1);
+		temp = temp << (sizeof(int) - foundRid->slotnum - 1);
 		if((slotmap & temp) != 0){ //slot is not empty -> record is valid
 			*recPtr = buffer[relNum].contents + RECORDSIZE*(foundRid->slotnum); //To be changed here after removing restriction
 			return OK;

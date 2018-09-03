@@ -21,6 +21,13 @@
 #define SLOTMAPSIZE 4
 #define RECORDSIZE 120
 
+#define EQ 501
+#define GE 502
+#define GT 503
+#define LE 504
+#define LT 505
+#define NE 506
+
 /*************************************************************
 		TYPE DEFINITIONS 
 *************************************************************/
